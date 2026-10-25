@@ -1,10 +1,9 @@
-FROM node:20.18.1-bookworm
+FROM node:22-bookworm
 
 WORKDIR /app
 
 COPY backend/package*.json ./
 RUN npm install
-RUN npm rebuild better-sqlite3 --build-from-source
 
 COPY backend/ ./
 RUN npm run build

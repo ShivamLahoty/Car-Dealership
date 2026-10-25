@@ -46,7 +46,6 @@ Admin login: `admin@dealership.com` / `admin123`, or register as a customer.
 |:---:|:---:|
 | ![Admin](docs/screenshots/admin.png) | ![My purchases](docs/screenshots/purchases.png) |
 ---
-
 ## ✨ Features
 
 **Everyone**

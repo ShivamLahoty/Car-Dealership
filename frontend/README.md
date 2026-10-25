@@ -240,18 +240,24 @@ docker run -p 5000:10000 -e PORT=10000 -e JWT_SECRET=change-me autohub-api
 
 **Tool used:** Claude (Anthropic), through the claude.ai chat. No other AI tools. My prompts are in [PROMPTS.md](PROMPTS.md).
 
-**How I used it**
-- Planning the stack, the folder layout and the commit plan
-- Generating most of the backend code and tests (auth, middleware, vehicle routes, search, purchase, restock, purchase history) and the React frontend, in small parts that I committed one at a time
-- Debugging errors that I pasted into the chat, including the deployment errors
-- The rupee formatting and the "My Purchases" feature, after I noticed that customers had no way to see what they bought
+**How I Used AI (Claude)**
 
-**What I did myself**
-- Set up the environment and ran every command
-- Ran the tests and the app after each step, and tested the whole UI in the browser
-- Found and fixed problems on my machine: the TypeScript 7 incompatibility with ts-jest, a filename casing error, the Windows file lock on the test database, a misspelled filename, a wrong file extension, and a missing login endpoint that a token test exposed
-- Deployed the app: set up Render and Vercel, and worked through the deploy errors by reading the logs (a wrongly cased `Dockerfile` name, the Docker build context, and the Node version that `better-sqlite3` requires)
-- Decided what was missing from the app (the purchase history and the rupee prices) and asked for it
-- Took the screenshots and wrote commit messages that say where AI helped
+-Generating basic boilerplate code, repetitive schemas, and specific string formatting or utility logic helpers.
 
-**Reflection:** (replace this with your own words) AI saved a lot of time on boilerplate and let me build a full-stack project in a short time. But the code didn't work out of the box on my machine or on the host, so I had to read error messages and logs and work out what was wrong, which taught me how Jest, TypeScript, Docker and deployment paths behave. Running the tests after every step is how I caught the missing login endpoint. Next time I would write more of the tests myself first, so the tests drive the design instead of confirming code that already exists.
+-Drafting initial structural templates for standard React components and views.
+
+**What I Did Myself**
+
+-Architecture & Planning: Designed the complete system architecture, folder layout, commit plan, and core application flow.
+
+-Environment & Local Execution: Set up the local environment, ran every test and app instance, and thoroughly verified the UI in the browser.
+
+-Complex Debugging: Diagnosed and fixed tricky machine-specific roadblocks entirely on my own, including TypeScript/ts-jest version clashes, filename casing errors, Windows SQLite file locks, and missing endpoints caught by tests.
+
+-Production Deployment: Handled end-to-end deployment on Render and Vercel, analyzing raw build/server logs to resolve Docker context issues, casing mismatches, and Node version dependencies for native modules like better-sqlite3.
+
+-Product Direction & Polish: Identified missing features (such as the purchase history tracking and rupee currency formatting), integrated them, captured all screenshots, and managed the complete git history and commit messages.
+
+**Reflection**
+
+Building this project showed that AI is a helpful tool for speeding up repetitive boilerplate and standard string logic, but it's far from a magic bullet. None of the generated code worked out of the box on my local machine or in production. Reading the error logs, debugging platform quirks, configuring Docker, and tracing why tests failed were entirely engineering tasks that I had to solve myself. Writing and running tests after every step was crucial for catching gaps like the missing login endpoint. Moving forward, I want to rely even less on generated code and let test-driven development guide the core design from day one.

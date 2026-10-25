@@ -44,3 +44,41 @@ describe('POST /api/auth/register', () => {
     expect(res.body.role).toBe('admin');
   });
 });
+
+describe('POST /api/auth/login', () => {
+  const loginUser = { email: 'login@example.com', password: 'secret123' };
+
+  beforeAll(async () => {
+    await request(app).post('/api/auth/register').send(loginUser);
+  });
+
+  it('returns a token for correct credentials', async () => {
+    const res = await request(app).post('/api/auth/login').send(loginUser);
+
+    expect(res.status).toBe(200);
+    expect(res.body.token).toBeDefined();
+    expect(res.body.user.email).toBe(loginUser.email);
+  });
+
+  it('rejects a wrong password', async () => {
+    const res = await request(app)
+      .post('/api/auth/login')
+      .send({ email: loginUser.email, password: 'wrongpass' });
+
+    expect(res.status).toBe(401);
+  });
+
+  it('rejects an unknown email', async () => {
+    const res = await request(app)
+      .post('/api/auth/login')
+      .send({ email: 'nobody@example.com', password: 'secret123' });
+
+    expect(res.status).toBe(401);
+  });
+
+  it('rejects missing fields', async () => {
+    const res = await request(app).post('/api/auth/login').send({});
+
+    expect(res.status).toBe(400);
+  });
+});

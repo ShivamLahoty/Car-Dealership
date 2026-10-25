@@ -7,6 +7,7 @@
     "build": "tsc -p tsconfig.build.json",
     "start": "node dist/server.js",
     "test": "jest --runInBand",
+    "seed": "ts-node src/seed.ts",
     "test:coverage": "jest --runInBand --coverage"
   },
   "keywords": [],
@@ -33,6 +34,7 @@
     "jest": "^30.5.2",
     "supertest": "^7.3.1",
     "ts-jest": "^29.4.15",
+    "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.3"
   }

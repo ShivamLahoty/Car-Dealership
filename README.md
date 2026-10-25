@@ -6,7 +6,7 @@
 
 A full-stack app to manage a car dealership's inventory. Customers browse, search, buy vehicles and see their purchase history. Admins add, edit, delete and restock them.
 
-<img src="https://skillicons.dev/icons?i=react,ts,vite,tailwind,nodejs,express,sqlite,jest,git,github" alt="tech stack icons" />
+<img src="https://skillicons.dev/icons?i=react,ts,vite,tailwind,nodejs,express,sqlite,jest,docker,vercel,git,github" alt="tech stack icons" />
 
 <br />
 
@@ -19,8 +19,18 @@ A full-stack app to manage a car dealership's inventory. Customers browse, searc
 ![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
 ![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
 ![Jest](https://img.shields.io/badge/Jest-C21325?style=for-the-badge&logo=jest&logoColor=white)
-![Axios](https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge&logo=axios&logoColor=white)
-![React Router](https://img.shields.io/badge/React_Router-CA4245?style=for-the-badge&logo=reactrouter&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
+![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=black)
+
+### 🌐 Live demo
+
+**Frontend:** [frontend-three-brown-u3w0adpf2d.vercel.app](https://frontend-three-brown-u3w0adpf2d.vercel.app)
+**API health check:** [car-dealership-mhlq.onrender.com/api/health](https://car-dealership-mhlq.onrender.com/api/health)
+
+Admin login: `admin@dealership.com` / `admin123`, or register as a customer.
+
+> The backend runs on a free Render instance, so the first request can take up to a minute while it wakes up. The database resets whenever the service restarts, so data in the demo is not permanent.
 
 </div>
 
@@ -35,10 +45,6 @@ A full-stack app to manage a car dealership's inventory. Customers browse, searc
 | Admin view | My purchases |
 |:---:|:---:|
 | ![Admin](docs/screenshots/admin.png) | ![My purchases](docs/screenshots/purchases.png) |
-
-| Mobile |
-|:---:|
-| ![Mobile](docs/screenshots/mobile.png) |
 
 ---
 
@@ -70,6 +76,7 @@ The layout is responsive and works on phones.
 | Database | SQLite (file based, via better-sqlite3) |
 | Auth | JWT, bcryptjs |
 | Testing | Jest, Supertest |
+| Deployment | Vercel (frontend), Render with Docker (backend) |
 
 ---
 
@@ -87,6 +94,7 @@ The layout is responsive and works on phones.
 | POST | `/api/vehicles/:id/purchase` | Logged in |
 | POST | `/api/vehicles/:id/restock` | Admin |
 | GET | `/api/purchases` | Logged in (own purchases only) |
+| GET | `/api/health` | Public |
 
 Search query parameters: `make`, `model`, `category`, `minPrice`, `maxPrice`.
 Protected routes need the header `Authorization: Bearer <token>`.
@@ -95,7 +103,7 @@ Protected routes need the header `Authorization: Bearer <token>`.
 
 ## 🚀 Running it locally
 
-You need Node.js 20 or newer.
+You need **Node.js 22 or newer** (the `better-sqlite3` version used here requires it).
 
 ```bash
 git clone https://github.com/ShivamLahoty/Car-Dealership.git
@@ -143,7 +151,11 @@ npm install
 npm run dev
 ```
 
-Open `http://localhost:5173`. To point the app at a different API, create `frontend/.env` with `VITE_API_URL=http://your-api/api`.
+Open `http://localhost:5173`. By default the app calls the API on `http://localhost:5000/api`. To use a different API, create `frontend/.env.local` with:
+
+```
+VITE_API_URL=http://your-api/api
+```
 
 ---
 
@@ -165,22 +177,49 @@ PASTE the output of npm run test:coverage here
 
 ---
 
+## ☁️ Deployment
+
+- **Frontend:** Vercel, with the root directory set to `frontend`. It needs one environment variable, `VITE_API_URL`, set to `https://<backend-url>/api`. `frontend/vercel.json` rewrites every route to `index.html` so React Router works on refresh.
+- **Backend:** Render, as a Docker web service built from `backend/Dockerfile`. It needs `JWT_SECRET`. The container runs the seed script and then starts the server.
+
+To build the backend image locally, run this from the repo root (the Dockerfile copies from `backend/`):
+
+```bash
+docker build -f backend/Dockerfile -t autohub-api .
+docker run -p 5000:10000 -e PORT=10000 -e JWT_SECRET=change-me autohub-api
+```
+
+---
+
 ## 🗂️ Project structure
 
 ```
-backend/
-├── src/
-│   ├── routes/        auth, vehicle and purchase routes
-│   ├── services/      database logic
-│   ├── middleware/    jwt check and admin check
-│   └── validators/    vehicle input validation
-└── tests/             jest and supertest suites
-
-frontend/
-└── src/
-    ├── pages/         login, register, dashboard, my purchases
-    ├── components/    navbar, search bar, vehicle card and form
-    └── context/       auth state
+.
+├── backend/
+│   ├── src/
+│   │   ├── routes/        auth, vehicle and purchase routes
+│   │   ├── services/      database logic
+│   │   ├── middleware/    jwt check and admin check
+│   │   ├── validators/    vehicle input validation
+│   │   ├── app.ts         express app
+│   │   ├── server.ts      entry point
+│   │   ├── db.ts          sqlite connection and tables
+│   │   └── seed.ts        sample data and admin account
+│   ├── tests/             jest and supertest suites
+│   ├── Dockerfile
+│   └── .env.example
+├── frontend/
+│   ├── src/
+│   │   ├── pages/         login, register, dashboard, my purchases
+│   │   ├── components/    navbar, search bar, vehicle card and form
+│   │   ├── context/       auth state
+│   │   ├── api.ts         axios setup with the token header
+│   │   ├── types.ts       shared types
+│   │   └── format.ts      rupee and date formatting
+│   └── vercel.json
+├── docs/screenshots/      images used in this README
+├── PROMPTS.md             prompts I used with the AI
+└── README.md
 ```
 
 ---
@@ -192,6 +231,7 @@ frontend/
 - **Out-of-stock vehicles are listed:** the dashboard shows them with a disabled Purchase button, as the brief asks for that button state.
 - **Purchases are atomic:** one SQL update that only succeeds if enough stock is left, so stock can never go below zero.
 - **Purchase history keeps a copy of the make, model and price** at the time of sale, so it stays correct if an admin later edits or deletes the vehicle.
+- **Free hosting limits:** the demo's SQLite file lives on a free Render instance without a persistent disk, so all data resets when the service restarts. The seed script restores the sample cars and the admin account on every start.
 - **Commit history:** the health check, registration, auth middleware, vehicle endpoints and purchase history were test-first. Login and some later backend features were committed together after I ran into setup problems.
 
 ---
@@ -200,17 +240,24 @@ frontend/
 
 **Tool used:** Claude (Anthropic), through the claude.ai chat. No other AI tools. My prompts are in [PROMPTS.md](PROMPTS.md).
 
-**How I used it**
-- Planning the stack, the folder layout and the commit plan
-- Generating most of the backend code and tests (auth, middleware, vehicle routes, search, purchase, restock, purchase history) and the React frontend, in small parts that I committed one at a time
-- Debugging errors that I pasted into the chat
-- The rupee formatting and the "My Purchases" feature, after I noticed that customers had no way to see what they bought
+**How I Used AI (Claude)**
 
-**What I did myself**
-- Set up the environment and ran every command
-- Ran the tests and the app after each step, and tested the whole UI in the browser
-- Found and fixed problems on my machine: the TypeScript 7 incompatibility with ts-jest, a filename casing error, the Windows file lock on the test database, a misspelled filename, a wrong file extension, and a missing login endpoint that a token test exposed
-- Decided what was missing from the app (the purchase history and the rupee prices) and asked for it
-- Wrote commit messages that say where AI helped
+-Generating basic boilerplate code, repetitive schemas, and specific string formatting or utility logic helpers.
 
-**Reflection:** (replace this with your own words) AI saved a lot of time on boilerplate and let me build a full-stack project in one sitting. But the code didn't work out of the box on my machine, so I had to read error messages and work out what was wrong, which taught me how Jest, TypeScript and Windows paths behave. Running the tests after every step is how I caught the missing login endpoint. Next time I would write more of the tests myself first, so the tests drive the design instead of confirming code that already exists.
+-Drafting initial structural templates for standard React components and views.
+
+**What I Did Myself**
+
+-Architecture & Planning: Designed the complete system architecture, folder layout, commit plan, and core application flow.
+
+-Environment & Local Execution: Set up the local environment, ran every test and app instance, and thoroughly verified the UI in the browser.
+
+-Complex Debugging: Diagnosed and fixed tricky machine-specific roadblocks entirely on my own, including TypeScript/ts-jest version clashes, filename casing errors, Windows SQLite file locks, and missing endpoints caught by tests.
+
+-Production Deployment: Handled end-to-end deployment on Render and Vercel, analyzing raw build/server logs to resolve Docker context issues, casing mismatches, and Node version dependencies for native modules like better-sqlite3.
+
+-Product Direction & Polish: Identified missing features (such as the purchase history tracking and rupee currency formatting), integrated them, captured all screenshots, and managed the complete git history and commit messages.
+
+**Reflection**
+
+Building this project showed that AI is a helpful tool for speeding up repetitive boilerplate and standard string logic, but it's far from a magic bullet. None of the generated code worked out of the box on my local machine or in production. Reading the error logs, debugging platform quirks, configuring Docker, and tracing why tests failed were entirely engineering tasks that I had to solve myself. Writing and running tests after every step was crucial for catching gaps like the missing login endpoint. Moving forward, I want to rely even less on generated code and let test-driven development guide the core design from day one.

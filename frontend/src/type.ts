@@ -14,3 +14,19 @@ export interface Vehicle {
 }
 
 export type VehicleInput = Omit<Vehicle, 'id'>
+
+export interface Filters {
+  make: string
+  model: string
+  category: string
+  minPrice: string
+  maxPrice: string
+}
+
+export const emptyFilters: Filters = {
+  make: '',
+  model: '',
+  category: '',
+  minPrice: '',
+  maxPrice: '',
+}

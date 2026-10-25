@@ -13,9 +13,21 @@ export default function Navbar() {
   return (
     <nav className="bg-indigo-700 text-white">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-        <Link to="/" className="text-xl font-bold">
-          AutoHub
-        </Link>
+        <div className="flex items-center gap-5">
+          <Link to="/" className="text-xl font-bold">
+            AutoHub
+          </Link>
+          {user && (
+            <div className="flex gap-4 text-sm">
+              <Link to="/" className="hover:underline">
+                Vehicles
+              </Link>
+              <Link to="/purchases" className="hover:underline">
+                My Purchases
+              </Link>
+            </div>
+          )}
+        </div>
 
         {user ? (
           <div className="flex items-center gap-3 text-sm">

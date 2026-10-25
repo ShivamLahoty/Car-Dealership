@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { Vehicle } from '../types'
+import { formatPrice } from '../format'
 
 interface Props {
   vehicle: Vehicle
@@ -39,7 +40,7 @@ export default function VehicleCard({
         </span>
       </div>
 
-      <p className="mt-4 text-2xl font-bold text-indigo-700">${vehicle.price.toLocaleString()}</p>
+      <p className="mt-4 text-2xl font-bold text-indigo-700">{formatPrice(vehicle.price)}</p>
 
       <button
         disabled={soldOut}

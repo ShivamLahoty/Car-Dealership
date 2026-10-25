@@ -13,7 +13,7 @@ const fields = [
   { name: 'make', label: 'Make', type: 'text' },
   { name: 'model', label: 'Model', type: 'text' },
   { name: 'category', label: 'Category', type: 'text' },
-  { name: 'price', label: 'Price ($)', type: 'number' },
+  { name: 'price', label: 'Price (₹)', type: 'number' },
   { name: 'quantity', label: 'Quantity in stock', type: 'number' },
 ] as const
 

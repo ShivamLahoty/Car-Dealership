@@ -30,3 +30,13 @@ export const emptyFilters: Filters = {
   minPrice: '',
   maxPrice: '',
 }
+export interface Purchase {
+  id: number
+  vehicleId: number
+  make: string
+  model: string
+  category: string
+  price: number
+  quantity: number
+  purchasedAt: string
+}

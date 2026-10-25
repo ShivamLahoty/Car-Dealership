@@ -9,8 +9,8 @@ const fields = [
   { name: 'make', placeholder: 'Make', type: 'text' },
   { name: 'model', placeholder: 'Model', type: 'text' },
   { name: 'category', placeholder: 'Category', type: 'text' },
-  { name: 'minPrice', placeholder: 'Min price', type: 'number' },
-  { name: 'maxPrice', placeholder: 'Max price', type: 'number' },
+  { name: 'minPrice', placeholder: 'Min price (₹)', type: 'number' },
+  { name: 'maxPrice', placeholder: 'Max price (₹)', type: 'number' },
 ] as const
 
 export default function SearchBar({ filters, onChange }: Props) {

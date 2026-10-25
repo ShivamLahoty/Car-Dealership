@@ -3,6 +3,7 @@ import Navbar from './components/Navbar'
 import ProtectedRoute from './components/ProtectedRoute'
 import Dashboard from './pages/Dashboard'
 import Login from './pages/Login'
+import MyPurchases from './pages/MyPurchases'
 import Register from './pages/Register'
 
 export default function App() {
@@ -15,6 +16,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/purchases"
+          element={
+            <ProtectedRoute>
+              <MyPurchases />
             </ProtectedRoute>
           }
         />

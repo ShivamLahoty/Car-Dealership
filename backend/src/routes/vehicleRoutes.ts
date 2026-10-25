@@ -1,7 +1,9 @@
 import { Router } from 'express';
-import { authenticate, requireAdmin } from '../middleware/auth';
+import { AuthRequest, authenticate, requireAdmin } from '../middleware/auth';
 import { validateVehicle } from '../validators/vehicleValidator';
+import { recordPurchase } from '../services/purchaseService';
 import {
+  Vehicle,
   addVehicle,
   deleteVehicle,
   getAllVehicles,
@@ -75,7 +77,7 @@ router.delete('/:id', requireAdmin, (req, res) => {
   res.status(204).send();
 });
 
-router.post('/:id/purchase', (req, res) => {
+router.post('/:id/purchase', (req: AuthRequest, res) => {
   const id = Number(req.params.id);
   const quantity = req.body?.quantity ?? 1;
 
@@ -89,7 +91,9 @@ router.post('/:id/purchase', (req, res) => {
     return res.status(400).json({ message: 'Not enough stock' });
   }
 
-  res.json(getVehicleById(id));
+  const vehicle = getVehicleById(id) as Vehicle;
+  recordPurchase(req.user!.id, vehicle, quantity);
+  res.json(vehicle);
 });
 
 router.post('/:id/restock', requireAdmin, (req, res) => {
